@@ -12,7 +12,7 @@ from pathlib import Path
 # ==================== 配置参数 ====================
 # 文件路径配置
 MAIN_FILE_NAME = r"main.py"              # 主文件名
-ICON_FILE_NAME = r"icon.png"             # 图标文件名
+ICON_FILE_NAME = r"resources\icon.png"             # 图标文件名
 OUTPUT_DIR_NAME = r"dist"                # 输出目录名
 
 # 输出文件配置
