@@ -12,9 +12,9 @@ from pathlib import Path
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
     QHBoxLayout, QPushButton, QTextEdit, QLabel,
-    QFileDialog, QProgressBar, QComboBox, QGridLayout
+    QFileDialog, QProgressBar, QComboBox, QGridLayout, QStatusBar
 )
-from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtCore import QThread, Signal
 
 
 class HashCalculator(QThread):
@@ -59,7 +59,19 @@ class MainWindow(QMainWindow):
 
     def init_ui(self):
         self.setWindowTitle("文件哈希值计算工具")
-        self.setMinimumSize(800, 600)
+        self.setMinimumSize(600, 400)
+        self.resize(700, 450)
+
+        # 创建状态栏并设置标题
+        self.statusBar = QStatusBar()
+        self.setStatusBar(self.statusBar)
+        self.statusLabel = QLabel("文件哈希值计算工具 - 支持多种算法")
+        self.statusBar.addWidget(self.statusLabel)
+
+        # 在右侧添加永久提示信息
+        self.tipLabel = QLabel("提示：支持任意大小的文件，大文件会显示计算进度")
+        self.tipLabel.setStyleSheet("color: #666; font-size: 11px;")
+        self.statusBar.addPermanentWidget(self.tipLabel)
 
         # 创建中心部件
         central_widget = QWidget()
@@ -67,25 +79,19 @@ class MainWindow(QMainWindow):
 
         # 主布局
         layout = QVBoxLayout(central_widget)
-        layout.setSpacing(15)
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(12)
+        layout.setContentsMargins(15, 15, 15, 15)
 
-        # 标题
-        title_label = QLabel("文件哈希值计算工具")
-        title_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title_label)
+        # 控制区域 - 将算法选择、文件选择和计算按钮放在一行
+        control_layout = QHBoxLayout()
+        control_layout.setSpacing(10)
 
-        # 添加一些垂直间距
-        layout.addSpacing(10)
-
-        # 哈希算法选择区域
-        algo_layout = QHBoxLayout()
-        algo_layout.setSpacing(10)
-        algo_label = QLabel("哈希算法:")
-        algo_layout.addWidget(algo_label)
+        # 哈希算法选择
+        algo_label = QLabel("算法:")
+        control_layout.addWidget(algo_label)
 
         self.hash_combo = QComboBox()
-        self.hash_combo.setMinimumWidth(150)
+        self.hash_combo.setMinimumWidth(100)
         self.hash_combo.addItems([
             "MD5",
             "SHA-1",
@@ -94,47 +100,49 @@ class MainWindow(QMainWindow):
             "SHA-512"
         ])
         self.hash_combo.setCurrentText("SHA-256")
-        algo_layout.addWidget(self.hash_combo)
-        algo_layout.addStretch()
-        layout.addLayout(algo_layout)
+        control_layout.addWidget(self.hash_combo)
 
-        # 文件选择区域
-        file_layout = QHBoxLayout()
-        file_layout.setSpacing(10)
+        
+        # 添加间隔
+        control_layout.addSpacing(20)
+
+        # 文件选择按钮
         self.select_button = QPushButton("选择文件")
-        self.select_button.setMinimumWidth(120)
+        self.select_button.setMinimumWidth(80)
+        self.select_button.setMinimumHeight(32)
         self.select_button.clicked.connect(self.select_file)
-        file_layout.addWidget(self.select_button)
-        file_layout.addStretch()
-        layout.addLayout(file_layout)
+        control_layout.addWidget(self.select_button)
+
+        # 计算按钮
+        self.calculate_button = QPushButton("计算哈希值")
+        self.calculate_button.setEnabled(False)
+        self.calculate_button.clicked.connect(self.calculate_hash)
+        self.calculate_button.setMinimumHeight(32)
+        control_layout.addWidget(self.calculate_button)
+
+        control_layout.addStretch()
+        layout.addLayout(control_layout)
 
         # 文件路径显示
         self.file_path_label = QLabel("未选择文件")
         self.file_path_label.setWordWrap(True)
         layout.addWidget(self.file_path_label)
 
-        # 计算按钮
-        self.calculate_button = QPushButton("计算哈希值")
-        self.calculate_button.setEnabled(False)
-        self.calculate_button.clicked.connect(self.calculate_hash)
-        self.calculate_button.setMinimumHeight(35)
-        layout.addWidget(self.calculate_button)
-
         # 进度条
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
-        self.progress_bar.setMinimumHeight(20)
+        self.progress_bar.setMinimumHeight(18)
         layout.addWidget(self.progress_bar)
 
         # 结果显示区域
-        layout.addSpacing(10)
+        layout.addSpacing(8)
         result_label = QLabel("计算结果:")
         layout.addWidget(result_label)
 
         self.result_text = QTextEdit()
         self.result_text.setReadOnly(True)
         self.result_text.setPlaceholderText("计算结果将显示在这里...")
-        self.result_text.setMinimumHeight(150)
+        self.result_text.setMinimumHeight(120)
         layout.addWidget(self.result_text)
 
         # 按钮区域
@@ -144,22 +152,17 @@ class MainWindow(QMainWindow):
         self.copy_button = QPushButton("复制到剪贴板")
         self.copy_button.setEnabled(False)
         self.copy_button.clicked.connect(self.copy_to_clipboard)
-        self.copy_button.setMinimumWidth(120)
-        self.copy_button.setMinimumHeight(35)
+        self.copy_button.setMinimumWidth(100)
+        self.copy_button.setMinimumHeight(30)
         button_layout.addWidget(self.copy_button)
 
         button_layout.addStretch()
         layout.addLayout(button_layout)
 
-        # 添加间距
-        layout.addSpacing(15)
-
-        # 提示信息
-        tip_label = QLabel("提示：支持任意大小的文件，大文件会显示计算进度")
-        tip_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(tip_label)
+        # 不再需要提示信息标签，改为在状态栏显示
 
         self.selected_file = None
+
     
     def select_file(self):
         file_path, _ = QFileDialog.getOpenFileName(
@@ -256,8 +259,7 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-
-    # 使用系统默认样式，不设置自定义样式
+    app.setStyle("windowsvista")
     window = MainWindow()
     window.show()
 
@@ -266,3 +268,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
