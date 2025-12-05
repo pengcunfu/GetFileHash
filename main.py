@@ -14,7 +14,8 @@ from PySide6.QtWidgets import (
     QHBoxLayout, QPushButton, QTextEdit, QLabel,
     QFileDialog, QProgressBar, QComboBox, QGridLayout, QStatusBar
 )
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import QThread, Signal, Qt
+from PySide6.QtGui import QDragEnterEvent, QDropEvent
 
 
 class HashCalculator(QThread):
@@ -162,6 +163,42 @@ class MainWindow(QMainWindow):
         # 不再需要提示信息标签，改为在状态栏显示
 
         self.selected_file = None
+
+        # 设置窗口接受拖拽
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        """拖拽进入事件"""
+        if event.mimeData().hasUrls():
+            # 检查是否是文件（不是目录）
+            urls = event.mimeData().urls()
+            if urls and urls[0].isLocalFile():
+                file_path = urls[0].toLocalFile()
+                if Path(file_path).is_file():
+                    event.acceptProposedAction()
+                    self.statusBar.showMessage(f"拖拽文件: {Path(file_path).name}", 2000)
+                    return
+        event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        """文件放下事件"""
+        if event.mimeData().hasUrls():
+            urls = event.mimeData().urls()
+            if urls and urls[0].isLocalFile():
+                file_path = urls[0].toLocalFile()
+                if Path(file_path).is_file():
+                    self.selected_file = file_path
+                    self.file_path_label.setText(f"已选择: {file_path}")
+                    self.calculate_button.setEnabled(True)
+                    self.result_text.clear()
+                    self.copy_button.setEnabled(False)
+
+                    # 自动开始计算
+                    self.calculate_hash()
+
+                    self.statusBar.showMessage(f"已处理文件: {Path(file_path).name}", 3000)
+                    return
+        event.ignore()
 
     
     def select_file(self):
