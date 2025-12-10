@@ -42,12 +42,12 @@ jobs:
 
     - name: 构建 Windows 可执行文件
       run: |
-        python scripts/deploy.py
+        python scripts/build.py
       shell: cmd
 
     - name: 构建安装程序
       run: |
-        python scripts/build.py
+        python scripts/build_installer.py
       shell: cmd
 
     - name: 获取版本信息

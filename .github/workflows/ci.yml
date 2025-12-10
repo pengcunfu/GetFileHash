@@ -7,7 +7,7 @@ on:
     branches: [ master, main ]
     paths:
       - 'main.py'
-      - 'scripts/deploy.py'
+      - 'scripts/build.py'
       - 'requirements.txt'
       - 'resources/**'
       - '.github/workflows/**'
@@ -15,7 +15,7 @@ on:
     branches: [ master, main ]
     paths:
       - 'main.py'
-      - 'scripts/deploy.py'
+      - 'scripts/build.py'
       - 'requirements.txt'
       - 'resources/**'
       - '.github/workflows/**'
@@ -47,5 +47,5 @@ jobs:
 
     - name: Windows - 构建测试
       run: |
-        python scripts/deploy.py
+        python scripts/build.py
       shell: cmd
