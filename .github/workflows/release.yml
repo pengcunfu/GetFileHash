@@ -65,7 +65,7 @@ jobs:
     - name: 压缩应用程序
       run: |
         cd ./dist/main.dist
-        7z a -tzip ../GetFileHash.zip ./
+        7z a -tzip ../GetFileHash-${{ steps.version.outputs.version }}.zip ./
       shell: bash
 
     - name: 创建 Release
@@ -78,7 +78,7 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./dist/GetFileHash.zip
+          ./dist/GetFileHash-${{ steps.version.outputs.version }}.zip
           ./installer/GetFileHash-Setup-*.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
