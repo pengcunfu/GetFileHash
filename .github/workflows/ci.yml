@@ -20,11 +20,7 @@ on:
 
 jobs:
   build-test:
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     steps:
     - name: 检出代码
@@ -44,30 +40,10 @@ jobs:
       run: |
         pip install nuitka
 
-    - name: Windows - 安装 MSVC 构建工具
-      if: matrix.os == 'windows-latest'
+    - name: 安装 MSVC 构建工具
       uses: microsoft/setup-msbuild@v1.3
 
     - name: Windows - 构建测试
-      if: matrix.os == 'windows-latest'
       run: |
         python scripts/deploy.py
       shell: cmd
-
-    - name: macOS - 构建测试
-      if: matrix.os == 'macos-latest'
-      run: |
-        python3 scripts/deploy.py
-
-    - name: Linux - 构建测试
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        python scripts/deploy.py
-
-    - name: 上传构建产物 (仅 Windows)
-      if: matrix.os == 'windows-latest'
-      uses: actions/upload-artifact@v3
-      with:
-        name: GetFileHash-Windows-CI
-        path: dist/*.exe
-        retention-days: 7
