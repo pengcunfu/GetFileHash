@@ -52,6 +52,18 @@ jobs:
         sed "s/{VERSION}/${{ steps.version.outputs.version }}/g" .github/RELEASE_TEMPLATE.md > release_notes.md
       shell: bash
 
+    - name: 查看dist目录结构
+      run: |
+        echo "=== dist目录完整结构 ==="
+        find ./dist -type f 2>/dev/null || echo "dist目录不存在或为空"
+        echo ""
+        echo "=== dist目录内容 ==="
+        ls -la ./dist/ 2>/dev/null || echo "dist目录不存在"
+        echo ""
+        echo "=== 查找所有exe文件 ==="
+        find . -name "*.exe" -type f 2>/dev/null || echo "未找到任何exe文件"
+      shell: bash
+
     - name: 创建 Release
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -62,6 +74,6 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./dist/main.dist/*.exe
+          ./dist/**/*.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
