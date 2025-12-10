@@ -280,7 +280,7 @@ class MainWindow(QMainWindow):
         self.result_text = QTextEdit()
         self.result_text.setReadOnly(True)
         self.result_text.setPlaceholderText("计算结果将显示在这里...")
-        self.result_text.setMinimumHeight(120)
+        self.result_text.setMinimumHeight(180)
         result_layout.addWidget(self.result_text)
 
         # 按钮区域
@@ -328,12 +328,12 @@ class MainWindow(QMainWindow):
                 if Path(file_path).is_file():
                     self.selected_file = file_path
                     self.file_path_label.setText(f"已选择: {file_path}")
-                    self.calculate_button.setEnabled(True)
+                    self.calculate_file_button.setEnabled(True)
                     self.result_text.clear()
                     self.copy_button.setEnabled(False)
 
                     # 自动开始计算
-                    self.calculate_hash()
+                    self.calculate_file_hash()
 
                     self.statusBar.showMessage(f"已处理文件: {Path(file_path).name}", 3000)
                     return
