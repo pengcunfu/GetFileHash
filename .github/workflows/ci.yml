@@ -10,6 +10,7 @@ on:
       - 'scripts/deploy.py'
       - 'requirements.txt'
       - 'resources/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [ master, main ]
     paths:
@@ -17,6 +18,7 @@ on:
       - 'scripts/deploy.py'
       - 'requirements.txt'
       - 'resources/**'
+      - '.github/workflows/**'
 
 jobs:
   build-test:
