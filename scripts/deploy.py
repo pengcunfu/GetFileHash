@@ -22,7 +22,7 @@ if sys.platform == "win32":
         '--file-description="GetFileHash SHA-256 Calculator"',
         f'--copyright="Copyright(C) {YEAR} {AUTHOR}"',
         '--output-dir=dist',
-        '--output-filename=GetFileSha.exe',
+        '--output-filename=GetFileHash.exe',
         'main.py',
     ]
 
