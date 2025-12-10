@@ -35,9 +35,19 @@ jobs:
     - name: 安装 MSVC 构建工具
       uses: microsoft/setup-msbuild@v1.3
 
+    - name: 安装 Inno Setup
+      run: |
+        choco install innosetup -y
+      shell: cmd
+
     - name: 构建 Windows 可执行文件
       run: |
         python scripts/deploy.py
+      shell: cmd
+
+    - name: 构建安装程序
+      run: |
+        python scripts/build.py
       shell: cmd
 
     - name: 获取版本信息
@@ -69,5 +79,6 @@ jobs:
         prerelease: false
         files: |
           ./dist/GetFileHash.zip
+          ./installer/GetFileHash-Setup-*.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
