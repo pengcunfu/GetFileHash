@@ -30,7 +30,7 @@ jobs:
 
     - name: 安装 Nuitka
       run: |
-        pip install nuitka
+        pip install nuitka imageio
 
     - name: 安装 MSVC 构建工具
       uses: microsoft/setup-msbuild@v1.3
