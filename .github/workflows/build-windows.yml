@@ -1,5 +1,7 @@
-name: Build Windows Executable
+# 构建 Windows 可执行文件
+name: 构建 Windows 可执行文件
 
+# 触发条件
 on:
   push:
     branches: [ master, main ]
@@ -15,38 +17,38 @@ on:
       - 'scripts/deploy.py'
       - 'requirements.txt'
       - 'resources/**'
-  workflow_dispatch:
+  workflow_dispatch:  # 手动触发
 
 jobs:
   build-windows:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
+    - name: 检出代码
       uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: 设置 Python 环境
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
+    - name: 安装依赖
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install Nuitka
+    - name: 安装 Nuitka
       run: |
         pip install nuitka
 
-    - name: Install MSVC Build Tools
+    - name: 安装 MSVC 构建工具
       uses: microsoft/setup-msbuild@v1.3
 
-    - name: Build executable
+    - name: 构建可执行文件
       run: |
         python scripts/deploy.py
 
-    - name: Upload Windows executable
+    - name: 上传 Windows 可执行文件
       uses: actions/upload-artifact@v3
       with:
         name: GetFileHash-Windows
