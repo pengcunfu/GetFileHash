@@ -1,0 +1,80 @@
+name: Build and Release
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install Nuitka
+      run: |
+        pip install nuitka
+
+    - name: Build on Windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        python scripts/deploy.py
+      shell: cmd
+
+    - name: Build on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        python3 scripts/deploy.py
+
+    - name: Build on Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        python scripts/deploy.py
+
+    - name: Upload Windows executable
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./dist/GetFileSha.exe
+        asset_name: GetFileHash-Windows.exe
+        asset_content_type: application/octet-stream
+
+    - name: Upload macOS executable
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./dist/main
+        asset_name: GetFileHash-macOS
+        asset_content_type: application/octet-stream
+
+    - name: Upload Linux executable
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./dist/main
+        asset_name: GetFileHash-Linux
+        asset_content_type: application/octet-stream
