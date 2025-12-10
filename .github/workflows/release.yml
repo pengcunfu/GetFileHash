@@ -62,6 +62,6 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./dist/GetFileHash.exe
+          ./dist/main.dist/*.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
