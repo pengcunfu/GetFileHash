@@ -1,10 +1,13 @@
 # 发布 - 构建并上传 Release 附件
 name: Release - 发布版本
 
-# 触发条件：创建 Release 时
+# 触发条件：创建 Release 或推送标签时
 on:
   release:
     types: [ published ]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-windows:
