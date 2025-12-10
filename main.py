@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
     QTabWidget, QGroupBox, QRadioButton, QButtonGroup, QMessageBox, QMenuBar
 )
 from PySide6.QtCore import QThread, Signal, Qt, QUrl
-from PySide6.QtGui import QDragEnterEvent, QDropEvent, QDesktopServices
+from PySide6.QtGui import QDragEnterEvent, QDropEvent, QDesktopServices, QIcon
 
 
 class HashCalculator(QThread):
@@ -242,7 +242,8 @@ class MainWindow(QMainWindow):
 
         self.text_input = QTextEdit()
         self.text_input.setPlaceholderText("在此输入要计算哈希值的文本...")
-        self.text_input.setMinimumHeight(150)
+        self.text_input.setMinimumHeight(100)
+        self.text_input.setMaximumHeight(150)
         self.text_input.textChanged.connect(self.on_text_changed)
         text_input_layout.addWidget(self.text_input)
 
@@ -567,7 +568,17 @@ UTF-8 字节数: {byte_count} 字节
 def main():
     app = QApplication(sys.argv)
     app.setStyle("windowsvista")
+
+    # 设置应用程序图标
+    icon_path = Path(__file__).parent / "resources" / "icon.png"
+    if icon_path.exists():
+        app.setWindowIcon(QIcon(str(icon_path)))
+
     window = MainWindow()
+    # 设置窗口图标（与应用程序图标相同）
+    if icon_path.exists():
+        window.setWindowIcon(QIcon(str(icon_path)))
+
     window.show()
 
     sys.exit(app.exec())
