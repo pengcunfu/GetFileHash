@@ -51,22 +51,14 @@ jobs:
 
     - name: 创建 Release
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.version.outputs.version }}
-        release_name: GetFileHash ${{ steps.version.outputs.version }}
+        name: GetFileHash ${{ steps.version.outputs.version }}
         body_path: release_notes.md
         draft: false
         prerelease: false
-
-    - name: 上传 Windows 可执行文件到 Release
-      uses: actions/upload-release-asset@v1
+        files: |
+          ./dist/GetFileSha.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/GetFileSha.exe
-        asset_name: GetFileHash-Windows.exe
-        asset_content_type: application/octet-stream
