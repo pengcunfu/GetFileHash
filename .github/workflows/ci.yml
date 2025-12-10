@@ -1,5 +1,5 @@
-# 构建 Windows 可执行文件
-name: 构建 Windows 可执行文件
+# 持续集成 - 确保编译不出错
+name: CI - 持续集成
 
 # 触发条件
 on:
@@ -17,11 +17,14 @@ on:
       - 'scripts/deploy.py'
       - 'requirements.txt'
       - 'resources/**'
-  workflow_dispatch:  # 手动触发
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build-test:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: 检出代码
@@ -41,16 +44,30 @@ jobs:
       run: |
         pip install nuitka
 
-    - name: 安装 MSVC 构建工具
+    - name: Windows - 安装 MSVC 构建工具
+      if: matrix.os == 'windows-latest'
       uses: microsoft/setup-msbuild@v1.3
 
-    - name: 构建可执行文件
+    - name: Windows - 构建测试
+      if: matrix.os == 'windows-latest'
+      run: |
+        python scripts/deploy.py
+      shell: cmd
+
+    - name: macOS - 构建测试
+      if: matrix.os == 'macos-latest'
+      run: |
+        python3 scripts/deploy.py
+
+    - name: Linux - 构建测试
+      if: matrix.os == 'ubuntu-latest'
       run: |
         python scripts/deploy.py
 
-    - name: 上传 Windows 可执行文件
+    - name: 上传构建产物 (仅 Windows)
+      if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v3
       with:
-        name: GetFileHash-Windows
+        name: GetFileHash-Windows-CI
         path: dist/*.exe
-        retention-days: 30
+        retention-days: 7

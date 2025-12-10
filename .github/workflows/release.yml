@@ -1,5 +1,5 @@
-# 构建并发布
-name: 构建并发布
+# 发布 - 构建并上传 Release 附件
+name: Release - 发布版本
 
 # 触发条件：创建 Release 时
 on:
@@ -7,12 +7,8 @@ on:
     types: [ published ]
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-
-    runs-on: ${{ matrix.os }}
+  build-windows:
+    runs-on: windows-latest
 
     steps:
     - name: 检出代码
@@ -32,24 +28,15 @@ jobs:
       run: |
         pip install nuitka
 
-    - name: 在 Windows 上构建
-      if: matrix.os == 'windows-latest'
+    - name: 安装 MSVC 构建工具
+      uses: microsoft/setup-msbuild@v1.3
+
+    - name: 构建 Windows 可执行文件
       run: |
         python scripts/deploy.py
       shell: cmd
 
-    - name: 在 macOS 上构建
-      if: matrix.os == 'macos-latest'
-      run: |
-        python3 scripts/deploy.py
-
-    - name: 在 Linux 上构建
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        python scripts/deploy.py
-
-    - name: 上传 Windows 可执行文件
-      if: matrix.os == 'windows-latest'
+    - name: 上传 Windows 可执行文件到 Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,26 +44,4 @@ jobs:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./dist/GetFileSha.exe
         asset_name: GetFileHash-Windows.exe
-        asset_content_type: application/octet-stream
-
-    - name: 上传 macOS 可执行文件
-      if: matrix.os == 'macos-latest'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/main
-        asset_name: GetFileHash-macOS
-        asset_content_type: application/octet-stream
-
-    - name: 上传 Linux 可执行文件
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/main
-        asset_name: GetFileHash-Linux
         asset_content_type: application/octet-stream
