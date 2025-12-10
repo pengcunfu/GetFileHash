@@ -52,6 +52,12 @@ jobs:
         sed "s/{VERSION}/${{ steps.version.outputs.version }}/g" .github/RELEASE_TEMPLATE.md > release_notes.md
       shell: bash
 
+    - name: 压缩应用程序
+      run: |
+        cd ./dist/main.dist
+        7z a -tzip ../GetFileHash.zip ./
+      shell: bash
+
     - name: 创建 Release
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -62,6 +68,6 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./dist/main.dist/*.exe
+          ./dist/GetFileHash.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
