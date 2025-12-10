@@ -1,69 +1,126 @@
-# File SHA-256 Calculator
+# GetFileHash - Hash Calculator
 
-A graphical interface tool based on PySide6 for calculating file SHA-256 hash values.
+A modern graphical interface tool based on PySide6 for calculating file and text hash values.
 
-## Features
+## ✨ Features
 
-- 🎨 Modern graphical user interface
-- 📊 Progress display for large file calculations
-- 📋 One-click copy hash value to clipboard
-- 🚀 Support for files of any size
-- 💻 Cross-platform support (Windows, Linux, macOS)
+- 🎨 **Modern Graphical User Interface** - Based on PySide6 (Qt for Python)
+- 🔄 **Multiple Hash Algorithm Support** - MD5, SHA-1, SHA-256, SHA-384, SHA-512
+- 📊 **Large File Progress Display** - Real-time calculation progress
+- 📋 **One-Copy Function** - Quickly copy hash values to clipboard
+- 📝 **Text Hash Calculation** - Support for calculating text content hash values
+- 🖱️ **File Drag & Drop** - Directly drag files to the interface for calculation
+- 🚀 **High Performance** - Support for files of any size
+- 💻 **Cross-Platform Support** - Windows, Linux, macOS
+- 📦 **Convenient Distribution** - Provides installer and portable versions
 
-## Install Dependencies
+## 🚀 Quick Start
+
+### Download and Installation
+
+#### 📦 Recommended Download: Installer Version
+- **File Name**: `GetFileHash-Setup-{VERSION}.exe`
+- **Description**: Complete Windows installer with uninstall functionality
+- **Advantages**: Automatically creates desktop shortcuts, start menu items, supports program uninstallation
+
+#### 🗂️ Portable Version
+- **File Name**: `GetFileHash-{VERSION}.zip`
+- **Description**: Green portable version, extract and use
+- **Advantages**: No installation required, does not write to registry, suitable for USB drives
+
+Download the latest version from the [Releases page](https://github.com/pengcunfu/GetFileHash/releases).
+
+### System Requirements
+- Windows 10 and above
+- **Recommended**: Installer version requires administrator privileges for installation
+- **Portable**: No special permissions required
+
+## 💻 Development Environment
+
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run the Program
-
-### Run Python Script Directly
+### Run the Program
 
 ```bash
-python get_file_sha256.py
+python main.py
 ```
 
-### Package as Executable
-
-Use the provided build.py script for packaging:
+### Build Executable
 
 ```bash
-python build.py
+# Build Windows executable
+python scripts/build.py
+
+# Build Windows installer
+python scripts/build_installer.py
 ```
 
-After packaging is complete, the executable file will be located in the `dist` directory.
+## 📖 Usage Instructions
 
-## Packaging Instructions
+### File Hash Calculation
+1. Click the "Select File" button or directly drag files to the interface
+2. Select the required hash algorithm (default SHA-256)
+3. Click the "Calculate Hash" button
+4. Wait for calculation to complete (progress bar shows for large files)
+5. Click "Copy to Clipboard" to copy the result
 
-The `build.py` script will automatically:
-1. Check if PyInstaller is installed
-2. Clean previous build files
-3. Use PyInstaller to package the program
-4. Generate a single-file executable (can run without Python environment)
+### Text Hash Calculation
+1. Switch to the "Text Hash" tab
+2. Enter or paste text in the text box
+3. Select hash algorithm
+4. Click "Calculate Hash" button
+5. Copy calculation result
 
-### Custom Packaging Options
+## 🛠️ Tech Stack
 
-Edit the `pyinstaller_args` list in `build.py` to modify packaging options:
+- **Python 3.9** - Core development language
+- **PySide6** - GUI framework (Qt for Python)
+- **Nuitka** - Compilation tool for generating high-performance executables
+- **Inno Setup** - Windows installer creation
 
-- `--name`: Executable file name
-- `--onefile`: Package into a single file
-- `--windowed`: Windows GUI program (no console display)
-- `--icon`: Specify icon file (.ico format)
+## 📁 Project Structure
 
-## Usage
+```
+GetFileHash/
+├── main.py                 # Main program entry
+├── requirements.txt        # Python dependencies
+├── resources/             # Resource files
+│   └── icon.png          # Application icon
+├── scripts/               # Build scripts
+│   ├── build.py          # Build executable
+│   └── build_installer.py # Build installer
+├── scripts/installer.iss  # Inno Setup configuration
+└── .github/workflows/     # CI/CD workflows
+    ├── ci.yml            # Continuous integration
+    └── release.yml       # Auto release
+```
 
-1. Click the "Select File" button to choose the file for hash calculation
-2. Click the "Calculate SHA-256" button to start calculation
-3. Wait for calculation to complete (progress bar will show for large files)
-4. Click the "Copy to Clipboard" button to copy the hash value
+## 🤝 Contributing
 
-## Tech Stack
+Issues and Pull Requests are welcome!
 
-- Python 3.x
-- PySide6 (Qt for Python)
-- PyInstaller (Packaging tool)
+1. Fork this repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## License
+## 📄 License
 
-MIT License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [PySide6](https://doc.qt.io/qtforpython/) - Excellent Python GUI framework
+- [Nuitka](https://nuitka.net/) - Powerful Python compiler
+- [Inno Setup](https://jrsoftware.org/isinfo.php) - Professional installer creation tool
+
+---
+
+<p align="center">
+  <strong>If this project helps you, please give it a ⭐ Star to support!</strong>
+</p>
