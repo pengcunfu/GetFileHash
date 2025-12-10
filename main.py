@@ -280,7 +280,7 @@ class MainWindow(QMainWindow):
         self.result_text = QTextEdit()
         self.result_text.setReadOnly(True)
         self.result_text.setPlaceholderText("计算结果将显示在这里...")
-        self.result_text.setMinimumHeight(180)
+        self.result_text.setMinimumHeight(120)
         result_layout.addWidget(self.result_text)
 
         # 按钮区域
