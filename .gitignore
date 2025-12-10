@@ -3,3 +3,4 @@ nuitka-crash-report.xml
 build/
 *.exe
 installer/
+__pycache__/
