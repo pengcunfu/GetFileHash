@@ -1,10 +1,8 @@
 # 发布 - 构建并上传 Release 附件
 name: Release - 发布版本
 
-# 触发条件：创建 Release 或推送标签时
+# 触发条件：推送标签时自动创建 Release
 on:
-  release:
-    types: [ published ]
   push:
     tags:
       - 'v*'
@@ -46,35 +44,29 @@ jobs:
       shell: bash
 
     - name: 生成 Release 说明
-      id: release_notes
       run: |
         # 使用模板文件生成 Release 说明
         sed "s/{VERSION}/${{ steps.version.outputs.version }}/g" .github/RELEASE_TEMPLATE.md > release_notes.md
-
-        echo "notes_file=release_notes.md" >> $GITHUB_OUTPUT
       shell: bash
 
-    - name: 更新 Release 说明
-      uses: actions/github-script@v6
+    - name: 创建 Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const fs = require('fs');
-          const notes = fs.readFileSync('release_notes.md', 'utf8');
-
-          await github.rest.repos.updateRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            release_id: context.event.release.id,
-            body: notes
-          });
+        tag_name: ${{ steps.version.outputs.version }}
+        release_name: GetFileHash ${{ steps.version.outputs.version }}
+        body_path: release_notes.md
+        draft: false
+        prerelease: false
 
     - name: 上传 Windows 可执行文件到 Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./dist/GetFileSha.exe
         asset_name: GetFileHash-Windows.exe
         asset_content_type: application/octet-stream
