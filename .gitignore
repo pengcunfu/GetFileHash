@@ -1,3 +1,5 @@
 dist/
 nuitka-crash-report.xml
 build/
+*.exe
+installer/
